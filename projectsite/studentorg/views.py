@@ -10,12 +10,38 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.db.models import Q
 
+from django.db import connection
+from django.http import JsonResponse
+from django.db.models.functions import ExtractMonth
+
+from django.db.models import Count
+from datetime import datetime
+
+from django.shortcuts import render
+
 
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
+
+#Dashboard
+class ChartView(ListView):
+    template_name = 'chart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        pass
+
+def PieCountbySeverity(request):
+    data = OrgMember.objects.values('organization__name').annotate(count=Count('organization')).order_by()
+    response_data = [{'name': entry['organization__name'], 'count': entry['count']} for entry in data]
+    return JsonResponse(response_data, safe=False)
+
 
 #Org List
 class OrganizationList(ListView):
