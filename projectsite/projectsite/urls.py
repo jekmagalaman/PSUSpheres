@@ -2,7 +2,7 @@
 URL configuration for projectsite project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -16,40 +16,47 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-from studentorg.views import HomePageView, ChartView, PieCountbySeverity, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView, OrganizationMembers, OrganizationMembersCreateView, OrganizationMembersUpdateView, OrganizationMembersDeleteView, StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView, CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView, ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
+from studentorg.views import HomePageView, OrganizationList , OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView, StudentList , StudentCreateView, StudentUpdateView, StudentDeleteView,OrgMemberList , OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView, CollegeList , CollegeCreateView, CollegeUpdateView, CollegeDeleteView, ProgramList , ProgramCreateView, ProgramUpdateView, ProgramDeleteView, ChartView, DoughStudCountbyCollege, PolarCountByProgram, DoughnutCountByCollege, PolarCountOrgmem, PolarCountstudYear
 from studentorg import views
 from django.contrib.auth import views as auth_views
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.HomePageView.as_view(), name='home'),
-    path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
-    path('chart/', PieCountbySeverity, name='chart'),
+    path('' , views.HomePageView.as_view(), name= 'home'),
+
     path('organization_list', OrganizationList.as_view(), name='organization-list'),
     path('organization_list/add', OrganizationCreateView.as_view(), name='organization-add'),
-    path('organization_list/<pk>', OrganizationUpdateView.as_view(), name='organization-update'),
-    path('organization_list/<pk>/delete', OrganizationDeleteView.as_view(), name='organization-delete'),
-    re_path(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
-
-    path('organization_members', OrganizationMembers.as_view(), name='organization-members'),
-    path('organization_members/add', OrganizationMembersCreateView.as_view(), name='organization-members-add'),
-    path('organization_members/<pk>', OrganizationMembersUpdateView.as_view(), name='organization-members-update'),
-    path('organization_members/<pk>/delete', OrganizationMembersDeleteView.as_view(), name='organization-members-delete'),
+    path('organization_list/<pk>',OrganizationUpdateView.as_view(), name='organization-update'),
+    path('organization_list/<pk>/delete',OrganizationDeleteView.as_view(), name='organization-delete'),
 
     path('student_list', StudentList.as_view(), name='student-list'),
     path('student_list/add', StudentCreateView.as_view(), name='student-add'),
-    path('student_list/<pk>', StudentUpdateView.as_view(), name='students-update'),
-    path('student_list/<pk>/delete', StudentDeleteView.as_view(), name='students-delete'),
+    path('student_list/<pk>',StudentUpdateView.as_view(), name='student-update'),
+    path('student_list/<pk>/delete',StudentDeleteView.as_view(), name='student-delete'),
+
+    path('orgmem_list', OrgMemberList.as_view(), name='orgmem-list'),
+    path('orgmem_list/add', OrgMemberCreateView.as_view(), name='orgmem-add'),
+    path('orgmem_list/<pk>',OrgMemberUpdateView.as_view(), name='orgmem-update'),
+    path('orgmem_list/<pk>/delete',OrgMemberDeleteView.as_view(), name='orgmem-delete'),
 
     path('college_list', CollegeList.as_view(), name='college-list'),
     path('college_list/add', CollegeCreateView.as_view(), name='college-add'),
-    path('college_list/<pk>', CollegeUpdateView.as_view(), name='college-update'),
-    path('college_list/<pk>/delete', CollegeDeleteView.as_view(), name='college-delete'),
+    path('college_list/<pk>',CollegeUpdateView.as_view(), name='college-update'),
+    path('college_list/<pk>/delete',CollegeDeleteView.as_view(), name='college-delete'),
 
     path('program_list', ProgramList.as_view(), name='program-list'),
     path('program_list/add', ProgramCreateView.as_view(), name='program-add'),
-    path('program_list/<pk>', ProgramUpdateView.as_view(), name='program-update'),
-    path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),    
+    path('program_list/<pk>',ProgramUpdateView.as_view(), name='program-update'),
+    path('program_list/<pk>/delete',ProgramDeleteView.as_view(), name='program-delete'),
+
+    re_path(r'^Login/$', auth_views.LoginView.as_view(template_name='login.html'), name= 'login'),
+    re_path(r'^Login/$', auth_views.LogoutView.as_view(), name= 'logout'),
+
+    path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
+    path('chart/', DoughStudCountbyCollege, name='chart'),
+    path('polar_chart/', PolarCountByProgram, name='chart'),
+    path('dough_chart/', DoughnutCountByCollege, name='chart'),
+    path('polar2_chart/', PolarCountOrgmem, name='chart'),
+    path('countyear_chart/', PolarCountstudYear, name='chart'),
+
 ]

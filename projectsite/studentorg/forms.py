@@ -1,33 +1,32 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Organization, OrgMember, Student, College, Program
+from .models import Organization, Student, OrgMember, College, Program
 
-#Organization
+
 class OrganizationForm(ModelForm):
     class Meta:
         model = Organization
         fields = "__all__"
 
-#Organization Members
-class OrganizationMembersForm(ModelForm):
-    class Meta:
-        model = OrgMember
-        fields = "__all__"
-
-#Students
-class StudentsForm(ModelForm):
+class StudentForm(ModelForm):
     class Meta:
         model = Student
         fields = "__all__"
 
-#College
+class OrgMemberForm(ModelForm):
+    date_joined = forms.DateField(label="date_joined",
+                                 widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+    class Meta:
+        model = OrgMember
+        fields = "__all__"
+
 class CollegeForm(ModelForm):
     class Meta:
         model = College
         fields = "__all__"
 
-#Program
 class ProgramForm(ModelForm):
     class Meta:
         model = Program
         fields = "__all__"
+

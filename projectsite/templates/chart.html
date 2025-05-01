@@ -1,126 +1,306 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-<div class="page-inner">
-  <h4 class="page-title">Dashboard</h4>
-  <div class="row">
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Pie Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="pieChart" style="width: 400px; height: 400px;"></canvas>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="content">
+  <div class="container-fluid">
+    <h4 class="page-title">Dashboard</h4>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Number of Students each College</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="DoughChart1" style="width: 100%; height: 500px"></canvas>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Multiple Line Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="multipleLineChart"></canvas>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Number of Students taken Program</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="polarChart" style="width: 100%; height: 500px"></canvas>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Multiple Bar Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="multipleBarChart"></canvas>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Number of Organization per College</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="DoughChart2" style="width: 100%; height: 500px"></canvas>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Line Chart</div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Number of Member per Organization</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="polarChart2" style="width: 100%; height: 500px"></canvas>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="lineChart"></canvas>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Number of Student Enrolled per year</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="countstudyear" style="width: 100%; height: 500px"></canvas>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block chart %}
+{% endblock %} {% block chart %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    function loadChartData() {
-      // Pie Chart
-      fetch("/chart/")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Received data for pie chart:", data);  // Check if data is correct
+  function loadChartData() {
+    // DoughChart
+    fetch("/chart/")
+      .then((response) => response.json())
+      .then((data) => {
+        var labels = Object.keys(data);
+        var counts = Object.values(data);
+        var DoughChart = document.getElementById("DoughChart1").getContext("2d");
 
-          if (Array.isArray(data) && data.length > 0) {
-            var severityLevels = data.map(entry => entry.name);
-            var counts = data.map(entry => entry.count);
-            var pieChart = document.getElementById("pieChart").getContext("2d");
-
-            new Chart(pieChart, {
-              type: "pie",
-              data: {
-                datasets: [
-                  {
-                    data: counts,
-                    backgroundColor: ["#1d7af3", "#f3545d", "#fdaf4b"],
-                    borderWidth: 0,
-                  },
+        new Chart(DoughChart, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: counts,
+                backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                  "rgba(54, 162, 235, 0.6)",
+                  "rgba(255, 206, 86, 0.6)",
+                  "rgba(75, 192, 192, 0.6)",
+                  "rgba(153, 102, 255, 0.6)",
+                  "rgba(255, 159, 64, 0.6)",
+                  "rgba(3, 252, 7, 0.6)",
+                  "rgba(255, 0, 0, 0.6)",
+                  "rgba(255, 255, 0, 0.6)",
+                  "rgba(0, 255, 255, 0.6)",
                 ],
-                labels: organization,
+                borderWidth: 0,
               },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                  position: "bottom",
-                  labels: {
-                    fontColor: "rgb(154, 154, 154)",
-                    fontSize: 11,
-                    usePointStyle: true,
-                    padding: 20,
-                  },
-                },
-                pieceLabel: {
-                  render: "percentage",
-                  fontColor: "white",
-                  fontSize: 14,
-                },
-                tooltips: false,
-                layout: {
-                  padding: {
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 20,
-                  },
-                },
+            ],
+            labels: labels,
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+            },
+            layout: {
+              padding: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
               },
-            });
-          } else {
-            console.error("Invalid data format for pie chart.");
-          }
-        })
-        .catch((error) => console.error("Error fetching data for pie chart:", error));
-    }
+            },
+          },
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
 
-    loadChartData();
-  });
+    // DoughChart 2
+    fetch("/dough_chart/")
+      .then((response) => response.json())
+      .then((data) => {
+        var labels = Object.keys(data);
+        var counts = Object.values(data);
+        var DoughChart = document.getElementById("DoughChart2").getContext("2d");
+
+        new Chart(DoughChart, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: counts,
+                backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                  "rgba(54, 162, 235, 0.6)",
+                  "rgba(255, 206, 86, 0.6)",
+                  "rgba(75, 192, 192, 0.6)",
+                  "rgba(153, 102, 255, 0.6)",
+                  "rgba(255, 159, 64, 0.6)",
+                  "rgba(3, 252, 7, 0.6)",
+                  "rgba(255, 0, 0, 0.6)",
+                  "rgba(255, 255, 0, 0.6)",
+                  "rgba(0, 255, 255, 0.6)",
+                ],
+                borderWidth: 0,
+              },
+            ],
+            labels: labels,
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+            },
+            layout: {
+              padding: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+    // PolarChart
+    fetch("/polar_chart/")
+      .then((response) => response.json())
+      .then((data) => {
+        const labels = Object.keys(data);
+        const counts = Object.values(data);
+
+        var polarChart = new Chart(document.getElementById("polarChart").getContext("2d"), {
+          type: "polarArea",
+          data: {
+            labels: labels,
+            datasets: [{
+              data: counts,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(3, 252, 7, 0.6)",
+                "rgba(255, 0, 0, 0.6)",
+                "rgba(255, 255, 0, 0.6)",
+                "rgba(0, 255, 255, 0.6)",
+              ],
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+            },
+            scale: {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+    // PolarChart
+    fetch("/polar2_chart/")
+      .then((response) => response.json())
+      .then((data) => {
+        const labels = Object.keys(data);
+        const counts = Object.values(data);
+
+        var polarChart = new Chart(document.getElementById("polarChart2").getContext("2d"), {
+          type: "polarArea",
+          data: {
+            labels: labels,
+            datasets: [{
+              data: counts,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(3, 252, 7, 0.6)",
+                "rgba(255, 0, 0, 0.6)",
+                "rgba(255, 255, 0, 0.6)",
+                "rgba(0, 255, 255, 0.6)",
+              ],
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+            },
+            scale: {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+          // PolarChart
+    fetch("/countyear_chart/")
+      .then((response) => response.json())
+      .then((data) => {
+        const labels = Object.keys(data);
+        const counts = Object.values(data);
+
+        var polarChart = new Chart(document.getElementById("countstudyear").getContext("2d"), {
+          type: "polarArea",
+          data: {
+            labels: labels,
+            datasets: [{
+              data: counts,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(3, 252, 7, 0.6)",
+                "rgba(255, 0, 0, 0.6)",
+                "rgba(255, 255, 0, 0.6)",
+                "rgba(0, 255, 255, 0.6)",
+              ],
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+            },
+            scale: {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+
+    
+  }
+
+  loadChartData();
 </script>
 {% endblock %}
-
